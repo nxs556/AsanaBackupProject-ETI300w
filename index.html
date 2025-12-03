@@ -1,112 +1,72 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Asana Backup Dashboard</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8" />
+  <title>Tier 1 Asana Backup Tester</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <div class="app">
     <header class="app-header">
-      <div class="app-title">
-        <h1>Asana Backup Dashboard</h1>
-        <p>Run backups check status and download results</p>
-      </div>
-      <div class="app-status">
-        <span id="api-status-dot" class="status-dot status-dot-offline"></span>
-        <span id="api-status-text">Checking API status</span>
-      </div>
+      <h1>Tier 1 Asana Backup Tester</h1>
+      <button id="oauthBackupBtn">OAuth plus Backup</button>
     </header>
 
     <main class="app-main">
-      <section class="card">
-        <h2>API settings</h2>
-        <form id="settings-form">
-          <div class="field-row">
-            <label for="base-url">Backend base URL</label>
-            <input
-              type="url"
-              id="base-url"
-              name="base-url"
-              placeholder="https://your-backend.example.com"
-              required
-            >
-            <p class="field-help">
-              This should be the URL in front of your Lambda or API Gateway
-            </p>
-          </div>
+      <!-- Left side request panel -->
+      <section class="panel panel-left">
+        <h2>Request</h2>
+        <p class="hint">
+          This page calls your API Gateway endpoint and renders the response
+        </p>
 
-          <div class="field-row">
-            <label for="auth-token">Auth token optional</label>
-            <input
-              type="password"
-              id="auth-token"
-              name="auth-token"
-              placeholder="If your API expects a bearer token"
-            >
-          </div>
+        <label for="clientKey">Client key</label>
+        <input id="clientKey" type="text" value="demo-client" />
 
-          <button type="submit" class="btn primary">Save settings</button>
-        </form>
-      </section>
+        <label for="apiEndpoint">API endpoint (backup)</label>
+        <input
+          id="apiEndpoint"
+          type="text"
+          value="https://qf91r7lrw8.execute-api.us-east-1.amazonaws.com/prod/backup"
+        />
 
-      <section class="card">
-        <h2>Run backup</h2>
-        <form id="backup-form">
-          <div class="field-row">
-            <label for="project-id">Asana project ID</label>
-            <input
-              type="text"
-              id="project-id"
-              name="project-id"
-              placeholder="1234567890123456"
-              required
-            >
-          </div>
+        <label for="workspaceId">Workspace id</label>
+        <input id="workspaceId" type="text" placeholder="optional" />
 
-          <div class="field-row">
-            <label for="notes">Notes optional</label>
-            <input
-              type="text"
-              id="notes"
-              name="notes"
-              placeholder="Reason for this backup"
-            >
-          </div>
+        <label for="action">Action</label>
+        <select id="action">
+          <option value="status">status</option>
+          <option value="backup">backup</option>
+        </select>
 
-          <button type="submit" class="btn primary">Start backup</button>
-          <span id="backup-spinner" class="spinner hidden"></span>
-        </form>
-      </section>
-
-      <section class="card">
-        <div class="card-header-row">
-          <h2>Backups</h2>
-          <button id="refresh-backups" class="btn ghost">Refresh</button>
+        <div class="button-row">
+          <button id="oauthBtn">Connect Asana OAuth</button>
+          <button id="sendBtn">Send request</button>
+          <button id="clearBtn" class="secondary">Clear</button>
         </div>
 
-        <div id="backups-empty" class="empty-state">
-          <p>No backups found yet</p>
+        <div id="statusBar" class="status-bar"></div>
+      </section>
+
+      <!-- Right side response panel -->
+      <section class="panel panel-right">
+        <h2>Rendered output</h2>
+
+        <div class="response-row">
+          <div class="response-field">
+            <span class="response-label">Parsed JSON response</span>
+            <pre id="prettyOutput" class="response-pre"></pre>
+          </div>
         </div>
 
-        <table id="backups-table" class="backups-table hidden">
-          <thead>
-            <tr>
-              <th>Started at</th>
-              <th>Project ID</th>
-              <th>Status</th>
-              <th>Notes</th>
-              <th>Download</th>
-            </tr>
-          </thead>
-          <tbody id="backups-tbody">
-          </tbody>
-        </table>
+        <div class="response-row">
+          <div class="response-field">
+            <span class="response-label">Raw JSON</span>
+            <pre id="rawOutput" class="response-pre"></pre>
+          </div>
+        </div>
       </section>
     </main>
-
-    <div id="toast" class="toast hidden"></div>
   </div>
 
   <script src="script.js"></script>
