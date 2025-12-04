@@ -15,6 +15,7 @@ function setOutputs(obj) {
     JSON.stringify(obj, null, 2);
 }
 
+/* ---------- OAUTH ---------- */
 function startOAuth() {
   const url =
     API_BASE +
@@ -26,14 +27,14 @@ function startOAuth() {
   setStatus("Opened Asana OAuth window");
 }
 
-/* Core POST helper */
+/* ---------- CORE API HELPER ---------- */
 async function apiCall(action, extra = {}) {
   const endpoint =
     document.getElementById("apiEndpoint").value.trim() ||
     API_BASE + BACKUP_PATH;
 
   const body = {
-    action: action,
+    action,
     client_key: getClientKey(),
     ...extra
   };
@@ -49,7 +50,7 @@ async function apiCall(action, extra = {}) {
   return data;
 }
 
-/* LOAD WORKSPACES — uses BACKUP with action=status first */
+/* ---------- LOAD WORKSPACES ---------- */
 async function loadWorkspaces() {
   try {
     setStatus("Loading workspaces…");
@@ -79,42 +80,29 @@ async function loadWorkspaces() {
   }
 }
 
-
-    const sel = document.getElementById("workspaceSelect");
-    sel.innerHTML = "";
-    sel.disabled = false;
-
-    const opt = document.createElement("option");
-    opt.value = status.workspace_gid || "";
-    opt.textContent = status.workspace_gid || "psu.edu";
-    sel.appendChild(opt);
-
-    setStatus("Workspace loaded");
-  } catch (e) {
-    setStatus("Failed to load workspace");
-    console.error(e);
-  }
-}
-
-/* SAVE WORKSPACE — purely frontend state right now */
+/* ---------- SAVE WORKSPACE ---------- */
 async function saveWorkspace() {
   const sel = document.getElementById("workspaceSelect");
 
-  if (sel.disabled || !sel.value) {
+  if (!sel.value) {
     setStatus("Load and select a workspace first");
     return;
   }
 
-  setStatus("Workspace selected: " + sel.value);
+  const data = await apiCall("save_workspace", {
+    workspace_gid: sel.value
+  });
+
+  setStatus(data.message || "Workspace saved");
 }
 
-/* RUN BACKUP */
+/* ---------- RUN BACKUP ---------- */
 async function runBackup() {
   const workspaceId =
     document.getElementById("workspaceSelect").value;
 
   if (!workspaceId) {
-    setStatus("Select a workspace first");
+    setStatus("Load and save workspace first");
     return;
   }
 
@@ -123,9 +111,10 @@ async function runBackup() {
   });
 
   setStatus("Backup completed");
+  setOutputs(res);
 }
 
-/* CHECK STATUS */
+/* ---------- CHECK STATUS ---------- */
 async function checkStatus() {
   const data = await apiCall("status");
 
@@ -133,12 +122,12 @@ async function checkStatus() {
     data.asana_user_gid ? "light on" : "light error";
 
   document.getElementById("dbLight").className =
-    data.expires_at ? "light on" : "light error";
+    data.workspace_gid ? "light on" : "light error";
 
   setStatus("Status checked");
 }
 
-/* DOWNLOAD CSV */
+/* ---------- DOWNLOAD CSV ---------- */
 async function downloadCSV() {
   const endpoint =
     document.getElementById("apiEndpoint").value.trim() ||
@@ -164,13 +153,13 @@ async function downloadCSV() {
   a.click();
 }
 
-/* CLEAR */
+/* ---------- CLEAR ---------- */
 function clearAll() {
   setOutputs({});
   setStatus("");
 }
 
-/* EVENT BINDINGS */
+/* ---------- EVENT BINDINGS ---------- */
 document.getElementById("oauthBtn").onclick = startOAuth;
 document.getElementById("loadBtn").onclick = loadWorkspaces;
 document.getElementById("saveBtn").onclick = saveWorkspace;
