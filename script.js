@@ -143,6 +143,41 @@ function clearAll() {
   setStatus("", false);
 }
 
+async function refreshStatusLights() {
+  const apiEndpoint =
+    document.getElementById("apiEndpoint").value.trim() ||
+    API_BASE + BACKUP_PATH;
+
+  const body = {
+    action: "status",
+    client_key: getClientKey()
+  };
+
+  try {
+    const res = await fetch(apiEndpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body)
+    });
+
+    const data = await res.json();
+
+    const asanaLight = document.getElementById("asanaLight");
+    const dbLight = document.getElementById("dbLight");
+
+    if (data.message === "Token found" && data.expired === false) {
+      asanaLight.className = "light on";
+      dbLight.className = "light on";
+    } else {
+      asanaLight.className = "light error";
+      dbLight.className = "light error";
+    }
+  } catch (err) {
+    document.getElementById("asanaLight").className = "light error";
+    document.getElementById("dbLight").className = "light error";
+  }
+}
+
 // Wire up buttons
 document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("oauthBtn").onclick = startOAuth;
