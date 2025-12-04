@@ -179,13 +179,20 @@ async function refreshStatusLights() {
 }
 
 // Wire up buttons
+function clearAll() {
+  setOutputs(null);
+  setStatus("", false);
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("oauthBtn").onclick = startOAuth;
   document.getElementById("sendBtn").onclick = sendRequest;
+  document.getElementById("downloadBtn").onclick = downloadBackupCSV;
   document.getElementById("clearBtn").onclick = clearAll;
+  document.getElementById("oauthBackupBtn").onclick = startOAuth;
 
-  document.getElementById("oauthBackupBtn").onclick = async () => {
-    startOAuth();
+  refreshStatusLights();
+  setInterval(refreshStatusLights, 5000);
   };
 
   document.getElementById("downloadBtn").onclick = downloadBackupCSV;
