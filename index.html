@@ -2,64 +2,56 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Tier 1 Asana Backup Tester</title>
+  <title>Asana Backup Client</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <div class="app">
     <header class="app-header">
-      <h1>Tier 1 Asana Backup Tester</h1>
-      <button id="oauthBackupBtn">OAuth plus Backup</button>
+      <h1>Asana Backup Client</h1>
+
+      <div class="lights">
+        <div>
+          <div id="asanaLight" class="light error"></div>
+          <span>Asana</span>
+        </div>
+        <div>
+          <div id="dbLight" class="light error"></div>
+          <span>DB</span>
+        </div>
+      </div>
+
+      <button id="oauthBtn">Connect Asana</button>
     </header>
 
     <main class="app-main">
-      <section class="panel panel-left">
-        <h2>Request</h2>
-        <p class="hint">This page calls your API Gateway endpoint and renders the response</p>
+      <section class="panel">
+        <label>Client Key</label>
+        <input id="clientKey" value="demo-client" />
 
-        <label>Client key</label>
-        <input id="clientKey" type="text" value="demo-client" />
-
-        <label>API endpoint</label>
-        <input id="apiEndpoint" type="text"
+        <label>API Endpoint</label>
+        <input id="apiEndpoint"
           value="https://qf91r7lrw8.execute-api.us-east-1.amazonaws.com/prod/backup" />
 
-        <label>Workspace id</label>
-        <input id="workspaceId" type="text" />
-
-        <label>Action</label>
-        <select id="action">
-          <option value="status">status</option>
-          <option value="backup">backup</option>
-        </select>
-
-        <div class="button-row">
-          <button id="oauthBtn">Connect Asana OAuth</button>
-          <button id="sendBtn">Send request</button>
-          <button id="downloadBtn" class="secondary">Download Backup CSV</button>
-          <button id="clearBtn" class="secondary">Clear</button>
+        <div class="row">
+          <button id="loadWorkspacesBtn">Load Workspaces</button>
+          <select id="workspaceSelect"></select>
+          <button id="saveWorkspaceBtn">Save Workspace</button>
         </div>
 
-        <div class="status-lights">
-          <div><span class="light" id="asanaLight"></span> Asana Connected</div>
-          <div><span class="light" id="dbLight"></span> DB Token Saved</div>
+        <div class="row">
+          <button id="statusBtn">Check Status</button>
+          <button id="backupBtn">Run Backup</button>
+          <button id="downloadBtn">Download CSV</button>
+          <button id="clearBtn">Clear</button>
         </div>
 
-        <div id="statusBar" class="status-bar"></div>
+        <div id="statusBar"></div>
       </section>
 
-      <section class="panel panel-right">
-        <h2>Rendered output</h2>
-
-        <div class="response-row">
-          <span class="response-label">Parsed JSON</span>
-          <pre id="prettyOutput" class="response-pre"></pre>
-        </div>
-
-        <div class="response-row">
-          <span class="response-label">Raw JSON</span>
-          <pre id="rawOutput" class="response-pre"></pre>
-        </div>
+      <section class="panel">
+        <h3>Response</h3>
+        <pre id="prettyOutput"></pre>
       </section>
     </main>
   </div>
