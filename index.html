@@ -15,24 +15,19 @@
     <main class="app-main">
       <section class="panel panel-left">
         <h2>Request</h2>
-        <p class="hint">
-          This page calls your API Gateway endpoint and renders the response
-        </p>
+        <p class="hint">This page calls your API Gateway endpoint and renders the response</p>
 
-        <label for="clientKey">Client key</label>
+        <label>Client key</label>
         <input id="clientKey" type="text" value="demo-client" />
 
-        <label for="apiEndpoint">API endpoint (backup)</label>
-        <input
-          id="apiEndpoint"
-          type="text"
-          value="https://qf91r7lrw8.execute-api.us-east-1.amazonaws.com/prod/backup"
-        />
+        <label>API endpoint</label>
+        <input id="apiEndpoint" type="text"
+          value="https://qf91r7lrw8.execute-api.us-east-1.amazonaws.com/prod/backup" />
 
-        <label for="workspaceId">Workspace id</label>
-        <input id="workspaceId" type="text" placeholder="optional" />
+        <label>Workspace id</label>
+        <input id="workspaceId" type="text" />
 
-        <label for="action">Action</label>
+        <label>Action</label>
         <select id="action">
           <option value="status">status</option>
           <option value="backup">backup</option>
@@ -45,6 +40,11 @@
           <button id="clearBtn" class="secondary">Clear</button>
         </div>
 
+        <div class="status-lights">
+          <div><span class="light" id="asanaLight"></span> Asana Connected</div>
+          <div><span class="light" id="dbLight"></span> DB Token Saved</div>
+        </div>
+
         <div id="statusBar" class="status-bar"></div>
       </section>
 
@@ -52,17 +52,13 @@
         <h2>Rendered output</h2>
 
         <div class="response-row">
-          <div class="response-field">
-            <span class="response-label">Parsed JSON response</span>
-            <pre id="prettyOutput" class="response-pre"></pre>
-          </div>
+          <span class="response-label">Parsed JSON</span>
+          <pre id="prettyOutput" class="response-pre"></pre>
         </div>
 
         <div class="response-row">
-          <div class="response-field">
-            <span class="response-label">Raw JSON</span>
-            <pre id="rawOutput" class="response-pre"></pre>
-          </div>
+          <span class="response-label">Raw JSON</span>
+          <pre id="rawOutput" class="response-pre"></pre>
         </div>
       </section>
     </main>
