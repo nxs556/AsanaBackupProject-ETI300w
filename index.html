@@ -1,67 +1,65 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Asana Backup Client</title>
-  <link rel="stylesheet" href="styles.css" />
+  <meta charset="UTF-8">
+  <title>CLTR Task Asana Backup</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="app">
-<header class="app-header">
-  <div class="brand">
-    <img src="asana-logo.png" alt="Asana Logo" />
-    <div>
-      <h1>CLTR TASK</h1>
-      <p>Control your tasks with CLTR TASK</p>
+
+<div class="container">
+  <div class="header-row">
+    <img src="asana-logo.png" alt="Asana Logo" class="asana-logo">
+
+    <div class="header-text">
+      <h1>CLTR Task</h1>
+      <p class="tagline">Control your tasks with CLTR Task</p>
+
+      <div class="status-bar">
+        <span>Asana</span>
+        <div id="asanaLight" class="light error"></div>
+
+        <span>DB</span>
+        <div id="dbLight" class="light error"></div>
+
+        <button id="oauthBtn">Connect Asana</button>
+      </div>
     </div>
   </div>
 
-  <div class="lights">
-    <div>
-      <div id="asanaLight" class="light error"></div>
-      <span>Asana</span>
+  <div class="card">
+    <label>Client Key</label>
+    <input id="clientKey" value="demo-client">
+
+    <label>API Endpoint</label>
+    <input id="apiEndpoint" value="https://qf91r7lrw8.execute-api.us-east-1.amazonaws.com/prod/backup">
+
+    <div class="workspace-row">
+      <button id="loadBtn">Load Workspaces</button>
+
+      <select id="workspaceSelect" disabled>
+        <option value="">Load workspaces first</option>
+      </select>
+
+      <button id="saveBtn">Save Workspace</button>
     </div>
-    <div>
-      <div id="dbLight" class="light error"></div>
-      <span>DB</span>
+
+    <div class="button-row">
+      <button id="statusBtn">Check Status</button>
+      <button id="runBtn">Run Backup</button>
+      <button id="downloadBtn">Download CSV</button>
+      <button id="clearBtn">Clear</button>
     </div>
+
+    <div id="statusBar" class="status-text"></div>
   </div>
 
-  <button id="oauthBtn">Connect Asana</button>
-</header>
-    
-    <main class="app-main">
-      <section class="panel">
-        <label>Client Key</label>
-        <input id="clientKey" value="demo-client" />
-
-        <label>API Endpoint</label>
-        <input id="apiEndpoint"
-          value="https://qf91r7lrw8.execute-api.us-east-1.amazonaws.com/prod/backup" />
-
-        <div class="row">
-          <button id="loadWorkspacesBtn">Load Workspaces</button>
-          <select id="workspaceSelect"></select>
-          <button id="saveWorkspaceBtn">Save Workspace</button>
-        </div>
-
-        <div class="row">
-          <button id="statusBtn">Check Status</button>
-          <button id="backupBtn">Run Backup</button>
-          <button id="downloadBtn">Download CSV</button>
-          <button id="clearBtn">Clear</button>
-        </div>
-
-        <div id="statusBar"></div>
-      </section>
-
-      <section class="panel">
-        <h3>Response</h3>
-        <pre id="prettyOutput"></pre>
-      </section>
-    </main>
+  <div class="card">
+    <h3>Response</h3>
+    <pre id="prettyOutput"></pre>
   </div>
+</div>
 
-  <script src="script.js"></script>
+<script src="script.js"></script>
 </body>
 </html>
