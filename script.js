@@ -29,7 +29,7 @@ function setOutputs(obj) {
   raw.textContent = JSON.stringify(obj);
 }
 
-// OAuth in new tab
+// OAuth
 function startOAuth() {
   const clientKey = getClientKey();
   const url =
@@ -42,7 +42,7 @@ function startOAuth() {
   setStatus("Opened Asana OAuth window", false);
 }
 
-// Normal JSON request
+// Send JSON request
 async function sendRequest() {
   try {
     setStatus("Sending request", false);
@@ -61,38 +61,24 @@ async function sendRequest() {
       client_key: clientKey
     };
 
-    if (workspaceId) {
-      body.workspace_id = workspaceId;
-    }
+    if (workspaceId) body.workspace_id = workspaceId;
 
     const res = await fetch(apiEndpoint, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body)
     });
 
-    let data;
-    try {
-      data = await res.json();
-    } catch (e) {
-      data = { parseError: e.toString() };
-    }
-
+    const data = await res.json();
     setOutputs(data);
 
-    if (res.ok) {
-      setStatus("Success response received", false);
-    } else {
-      setStatus("HTTP " + res.status + " response received", true);
-    }
+    setStatus(res.ok ? "Success" : "HTTP " + res.status, !res.ok);
   } catch (err) {
-    setStatus("Network error " + err.toString(), true);
+    setStatus("Network error " + err, true);
   }
 }
 
-// CSV Download Backup
+// Download CSV
 async function downloadBackupCSV() {
   try {
     setStatus("Generating CSV", false);
@@ -104,45 +90,31 @@ async function downloadBackupCSV() {
     const body = {
       action: "backup",
       client_key: getClientKey(),
-      workspace_id: document.getElementById("workspaceId").value.trim() || null,
+      workspace_id:
+        document.getElementById("workspaceId").value.trim() || null,
       export: "csv"
     };
 
     const res = await fetch(apiEndpoint, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body)
     });
-
-    if (!res.ok) {
-      const text = await res.text();
-      setStatus("CSV error " + res.status, true);
-      return;
-    }
 
     const blob = await res.blob();
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
-
     a.href = url;
     a.download = "asana_backup.csv";
-    document.body.appendChild(a);
     a.click();
-    a.remove();
 
     setStatus("CSV downloaded", false);
   } catch (err) {
-    setStatus("CSV download failed " + err.toString(), true);
+    setStatus("CSV failed " + err, true);
   }
 }
 
-function clearAll() {
-  setOutputs(null);
-  setStatus("", false);
-}
-
+// Status lights
 async function refreshStatusLights() {
   const apiEndpoint =
     document.getElementById("apiEndpoint").value.trim() ||
@@ -172,18 +144,18 @@ async function refreshStatusLights() {
       asanaLight.className = "light error";
       dbLight.className = "light error";
     }
-  } catch (err) {
+  } catch {
     document.getElementById("asanaLight").className = "light error";
     document.getElementById("dbLight").className = "light error";
   }
 }
 
-// Wire up buttons
 function clearAll() {
   setOutputs(null);
   setStatus("", false);
 }
 
+// Wire buttons
 document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("oauthBtn").onclick = startOAuth;
   document.getElementById("sendBtn").onclick = sendRequest;
@@ -193,7 +165,4 @@ document.addEventListener("DOMContentLoaded", () => {
 
   refreshStatusLights();
   setInterval(refreshStatusLights, 5000);
-  };
-
-  document.getElementById("downloadBtn").onclick = downloadBackupCSV;
 });
