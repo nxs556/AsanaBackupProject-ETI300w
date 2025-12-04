@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>CLTR Task Asana Backup</title>
+  <title>CTRL Task Asana Backup</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -14,7 +14,7 @@
 
     <div class="header-text">
       <h1>CLTR Task</h1>
-      <p class="tagline">Control your tasks with CLTR Task</p>
+      <p class="tagline">Control your tasks with CTRL Task</p>
 
       <div class="status-bar">
         <span>Asana</span>
@@ -29,16 +29,16 @@
   </div>
 
   <div class="card">
-    <label>Client Key</label>
-    <input id="clientKey" value="demo-client">
-
     <label>API Endpoint</label>
-    <input id="apiEndpoint" value="https://qf91r7lrw8.execute-api.us-east-1.amazonaws.com/prod/backup">
+    <input id="apiEndpoint"
+           value="https://qf91r7lrw8.execute-api.us-east-1.amazonaws.com/prod/backup">
 
     <div class="workspace-row">
       <button id="loadBtn">Load Workspaces</button>
 
-      <select id="workspaceSelect" disabled></select>
+      <select id="workspaceSelect" disabled>
+        <option value="">Load workspaces first</option>
+      </select>
 
       <button id="saveBtn">Save Workspace</button>
     </div>

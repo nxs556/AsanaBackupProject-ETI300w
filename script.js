@@ -1,9 +1,18 @@
+// Updated secure frontend logic
+// Auto‑generates and stores a private client key per browser
+// Removes shared demo-client risk
+
 const API_BASE = "https://qf91r7lrw8.execute-api.us-east-1.amazonaws.com/prod";
 const AUTH_START_PATH = "/auth/asana/start";
 const BACKUP_PATH = "/backup";
 
 function getClientKey() {
-  return document.getElementById("clientKey").value.trim() || "demo-client";
+  let key = localStorage.getItem("asana_client_key");
+  if (!key) {
+    key = crypto.randomUUID();
+    localStorage.setItem("asana_client_key", key);
+  }
+  return key;
 }
 
 function setStatus(text) {
@@ -15,21 +24,14 @@ function setOutputs(obj) {
     JSON.stringify(obj, null, 2);
 }
 
-/* OAUTH */
 function startOAuth() {
-  const url =
-    API_BASE + AUTH_START_PATH + "?client_key=" +
-    encodeURIComponent(getClientKey());
-
+  const url = API_BASE + AUTH_START_PATH + "?client_key=" + encodeURIComponent(getClientKey());
   window.open(url, "_blank");
   setStatus("Opened Asana OAuth window");
 }
 
-/* CORE API */
 async function apiCall(action, extra = {}) {
-  const endpoint =
-    document.getElementById("apiEndpoint").value.trim() ||
-    API_BASE + BACKUP_PATH;
+  const endpoint = document.getElementById("apiEndpoint").value.trim() || API_BASE + BACKUP_PATH;
 
   const body = {
     action,
@@ -48,7 +50,6 @@ async function apiCall(action, extra = {}) {
   return data;
 }
 
-/* LOAD WORKSPACES */
 async function loadWorkspaces() {
   try {
     const data = await apiCall("list_workspaces");
@@ -70,55 +71,42 @@ async function loadWorkspaces() {
     });
 
     setStatus("Workspaces loaded");
-  } catch (e) {
+  } catch {
     setStatus("Failed to load workspaces");
   }
 }
 
-/* SAVE WORKSPACE */
 async function saveWorkspace() {
   const sel = document.getElementById("workspaceSelect");
-
   if (!sel.value) {
     setStatus("Select workspace first");
     return;
   }
 
-  const res = await apiCall("save_workspace", {
-    workspace_gid: sel.value
-  });
-
+  const res = await apiCall("save_workspace", { workspace_gid: sel.value });
   setStatus(res.message || "Workspace saved");
 }
 
-/* BACKUP WITH CONFIRM */
 async function runBackup() {
-  const workspaceId =
-    document.getElementById("workspaceSelect").value;
-
-  if (!workspaceId) {
+  const sel = document.getElementById("workspaceSelect").value;
+  if (!sel) {
     setStatus("Select workspace first");
     return;
   }
 
   const status = await apiCall("status");
 
-  const confirmMsg =
-    status.last_backup_at
-      ? `Last backup was ${status.last_backup_at}. Run again?`
-      : "No previous backup found. Run backup now?";
+  const confirmMsg = status.last_backup_at
+    ? `Last backup was ${status.last_backup_at}. Run again?`
+    : "No previous backup found. Run backup now?";
 
   if (!confirm(confirmMsg)) return;
 
-  const res = await apiCall("backup", {
-    workspace_id: workspaceId
-  });
-
+  const res = await apiCall("backup", { workspace_id: sel });
   setStatus("Backup completed");
   setOutputs(res);
 }
 
-/* STATUS */
 async function checkStatus() {
   const data = await apiCall("status");
 
@@ -135,11 +123,8 @@ async function checkStatus() {
   );
 }
 
-/* DOWNLOAD BACKUP CSV */
 async function downloadCSV() {
-  const endpoint =
-    document.getElementById("apiEndpoint").value.trim() ||
-    API_BASE + BACKUP_PATH;
+  const endpoint = document.getElementById("apiEndpoint").value.trim() || API_BASE + BACKUP_PATH;
 
   const res = await fetch(endpoint, {
     method: "POST",
@@ -159,13 +144,11 @@ async function downloadCSV() {
   a.click();
 }
 
-/* CLEAR */
 function clearAll() {
   setOutputs({});
   setStatus("");
 }
 
-/* BINDINGS */
 document.getElementById("oauthBtn").onclick = startOAuth;
 document.getElementById("loadBtn").onclick = loadWorkspaces;
 document.getElementById("saveBtn").onclick = saveWorkspace;
