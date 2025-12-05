@@ -2,19 +2,22 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>CTRL Task Asana Backup</title>
+  <title>CTRL-TASK Asana Backup</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
 <div class="container">
 
-  <div class="header-row">
+  <!-- Page header -->
+  <header class="header-row">
     <img src="asana-logo.png" alt="Asana Logo" class="asana-logo">
 
     <div class="header-text">
-      <h1>CTRL-TASK</h1>
-      <p class="tagline">Control your tasks with CTRL-TASK</p>
+      <h1>CTRL-TASK – Asana Backup</h1>
+      <p class="tagline">
+        A student project that lets you back up Asana projects and tasks to a database and CSV.
+      </p>
 
       <div class="status-bar">
         <span>Asana</span>
@@ -24,15 +27,39 @@
         <div id="dbLight" class="light error"></div>
       </div>
     </div>
+  </header>
+
+  <!-- Overview / instructions -->
+  <div class="card">
+    <h3>How this page works</h3>
+    <p>
+      CTRL-TASK connects to your Asana account using OAuth and stores a backup of your projects
+      and tasks in a MySQL database. You can also download a CSV copy of your task data.
+    </p>
+    <ol>
+      <li>Click <strong>Connect Asana</strong> and approve access.</li>
+      <li>Click <strong>Load Workspaces</strong> and choose a workspace.</li>
+      <li>Click <strong>Save Workspace</strong> to remember that selection.</li>
+      <li>Click <strong>Run Backup</strong> to store projects and tasks in the database.</li>
+      <li>Later, use <strong>Check Status</strong> or <strong>Download CSV</strong> to see your backups.</li>
+      <li>Use <strong>Disconnect Asana</strong> if you no longer want this tool to access your Asana data.</li>
+    </ol>
+    <p>
+      This application is part of a school project and is not an official Asana product.
+      Please only use test or non-sensitive workspaces when demonstrating the app.
+    </p>
   </div>
 
+  <!-- Asana connection card -->
   <div class="card">
     <h3>Asana connection</h3>
     <div class="row">
       <button id="oauthBtn">Connect Asana</button>
+      <button id="disconnectBtn">Disconnect Asana</button>
     </div>
   </div>
 
+  <!-- Backup settings -->
   <div class="card">
     <h3>Backup settings</h3>
     <label>API Endpoint</label>
@@ -59,12 +86,26 @@
     <div id="statusBar" class="status-text"></div>
   </div>
 
+  <!-- Response / debug output -->
   <div class="card">
     <h3>Response</h3>
     <pre id="prettyOutput"></pre>
   </div>
 
 </div>
+
+<!-- Simple footer -->
+<footer class="footer">
+  <p>
+    CTRL-TASK is a student project built for learning purposes. It is not affiliated with or endorsed by Asana.
+  </p>
+  <p>
+    You can learn more about Asana at
+    <a href="https://asana.com" target="_blank" rel="noreferrer">asana.com</a>.
+    Asana also supports importing tasks from CSV using its CSV importer, available from the
+    “Import” options in many project views.
+  </p>
+</footer>
 
 <script src="script.js"></script>
 </body>
